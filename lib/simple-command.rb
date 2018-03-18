@@ -7,17 +7,18 @@ class SimpleCommand
 
   class Manager
 
-    def self.register_command(name, klass)
+    def self.register_command(name, klass, defaults={})
       @commands ||= {}
-      @commands[name] = klass
+      @commands[name] = [klass, defaults]
     end
 
     def self.run(args)
       raise Error, "No commands defined" unless @commands
       begin
         name = args.shift or raise Error, "No subcommand given"
-        klass = @commands[name] or raise Error, "Command not found: #{name.inspect}"
-        options = HashStruct.new(SimpleOptionParser.parse(args))
+        info = @commands[name] or raise Error, "Command not found: #{name.inspect}"
+        klass, defaults = *info
+        options = HashStruct.new(SimpleOptionParser.parse(args, defaults))
         klass.new(options).run(args)
       rescue Error => e
         warn "Error: #{e}"
@@ -27,8 +28,8 @@ class SimpleCommand
 
   end
 
-  def self.register_command(name)
-    Manager.register_command(name, self)
+  def self.register_command(name, defaults={})
+    Manager.register_command(name, self, defaults)
   end
 
   def initialize(params={})
