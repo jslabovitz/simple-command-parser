@@ -14,21 +14,14 @@ class SimpleCommand
 
     def self.run(args)
       begin
-        command = parse(args)
-        command.run(args)
+        name = args.shift or raise Error, "No subcommand given"
+        klass = @commands[name] or raise Error, "Command not found: #{name.inspect}"
+        options = HashStruct.new(SimpleOptionParser.parse(args))
+        klass.new(options).run(args)
       rescue Error => e
         warn "Error: #{e}"
         exit(1)
       end
-    end
-
-    def self.parse(args)
-      name = args.shift or raise Error, "No subcommand given"
-      klass = @commands[name] or raise Error, "Command not found: #{name.inspect}"
-      command = klass.new
-      command.parse(args)
-      command.setup
-      command
     end
 
   end
@@ -38,21 +31,10 @@ class SimpleCommand
   end
 
   def initialize(params={})
-    params.each { |k, v| send("#{k}=", v) }
-  end
-
-  def parse(args)
-    HashStruct.new(SimpleOptionParser.parse(args)).each do |key, value|
-      begin
-        send("#{key}=", value)
-      rescue NoMethodError => e
-        raise Error, "Options not found: #{key.to_s.inspect}"
-      end
+    params.each do |key, value|
+      raise Error, "Option not found: #{key.to_s.inspect}" unless respond_to?(key)
+      send("#{key}=", value)
     end
-  end
-
-  def setup
-    # optionally implemented by subclass
   end
 
   def run(args)
