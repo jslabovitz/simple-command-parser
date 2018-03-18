@@ -44,7 +44,6 @@ class SimpleCommand
   def parse(args)
     HashStruct.new(SimpleOptionParser.parse(args)).each do |key, value|
       begin
-        ;;pp(key: value)
         send("#{key}=", value)
       rescue NoMethodError => e
         raise Error, "Options not found: #{key.to_s.inspect}"
