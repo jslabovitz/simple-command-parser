@@ -2,7 +2,7 @@ require 'simple-command'
 
 class DoIt < SimpleCommand
 
-  register self, 'do-it'
+  register_command 'do-it'
 
   def run(args)
     puts 'Done.'

@@ -7,12 +7,13 @@ class SimpleCommand
 
   class Manager
 
-    def self.register(klass, name)
+    def self.register_command(name, klass)
       @commands ||= {}
       @commands[name] = klass
     end
 
     def self.run(args)
+      raise Error, "No commands defined" unless @commands
       begin
         name = args.shift or raise Error, "No subcommand given"
         klass = @commands[name] or raise Error, "Command not found: #{name.inspect}"
@@ -26,8 +27,8 @@ class SimpleCommand
 
   end
 
-  def self.register(*args)
-    Manager.register(*args)
+  def self.register_command(name)
+    Manager.register_command(name, self)
   end
 
   def initialize(params={})
