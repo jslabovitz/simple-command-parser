@@ -5,42 +5,39 @@ class SimpleCommand
 
   class Error < Exception; end
 
-  class Manager
+  def self.run(args=ARGV, &block)
+    new(&block).run(args)
+  end
 
-    def self.register_command(name, klass, defaults={})
-      @commands ||= {}
-      @commands[name] = [klass, defaults]
-    end
+  def initialize(args=ARGV, &block)
+    @commands = {}
+    @globals = {}
+    instance_eval(&block)
+  end
 
-    def self.run(args)
-      raise Error, "No commands defined" unless @commands
-      begin
-        name = args.shift or raise Error, "No subcommand given"
-        info = @commands[name] or raise Error, "Command not found: #{name.inspect}"
-        klass, defaults = *info
-        options = HashStruct.new(SimpleOptionParser.parse(args, defaults))
-        klass.new(options).run(args)
-      rescue Error => e
-        warn "Error: #{e}"
-        exit(1)
+  def run(argv=ARGV)
+    begin
+      name = argv.shift or raise Error, "No subcommand given"
+      command = @commands[name] or raise Error, "Command not found: #{name.inspect}"
+      defaults, block = *command
+      HashStruct.new(@globals.merge(SimpleOptionParser.parse(argv, defaults))).each do |key, value|
+        instance_variable_set("@#{key}", value)
       end
-    end
-
-  end
-
-  def self.register_command(name, defaults={})
-    Manager.register_command(name, self, defaults)
-  end
-
-  def initialize(params={})
-    params.each do |key, value|
-      raise Error, "Option not found: #{key.to_s.inspect}" unless respond_to?(key)
-      send("#{key}=", value)
+      @global_block.call
+      block.call(argv)
+    rescue Error => e
+      warn "Error: #{e}"
+      exit(1)
     end
   end
 
-  def run(args)
-    raise NotImplementedError
+  def global(globals={}, &block)
+    @globals = globals
+    @global_block = block
+  end
+
+  def command(name, defaults={}, &block)
+    @commands[name] = [defaults, block]
   end
 
 end

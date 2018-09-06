@@ -1,16 +1,18 @@
 require 'simple-command'
 
-class DoIt < SimpleCommand
+SimpleCommand.run do
 
-  register_command 'do-it', when: 'now'
+  global format: 'd' do
+    @format = "%#{@format}"
+  end
 
-  attr_accessor :when
-
-  def run(args)
-    thing = args.shift || 'something'
-    puts "Doing #{thing} #{@when}."
+  command 'add', fudge: 0 do |args|
+    @total = 0
+    args.map(&:to_i).each do |n|
+      @total += n
+    end
+    @total += @fudge
+    puts "Total: #{@format}" % @total
   end
 
 end
-
-SimpleCommand::Manager.run(ARGV)
