@@ -1,18 +1,14 @@
+require 'minitest/autorun'
+require 'minitest/power_assert'
+
 require 'simple-command'
 
-SimpleCommand.run do
+class Test < MiniTest::Test
 
-  global format: 'd' do
-    @format = "%#{@format}"
+  def setup
   end
 
-  command 'add', fudge: 0 do |args|
-    @total = 0
-    args.map(&:to_i).each do |n|
-      @total += n
-    end
-    @total += @fudge
-    puts "Total: #{@format}" % @total
+  def teardown
   end
 
 end
