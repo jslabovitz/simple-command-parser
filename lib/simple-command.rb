@@ -19,7 +19,8 @@ class SimpleCommand
   end
 
   def self.command_classes
-    @command_classes || []
+    @command_classes ||= []
+    @command_classes
   end
 
   def self.run(args=ARGV, &block)
