@@ -77,6 +77,7 @@ class SimpleCommand
   end
 
   def command(name, defaults={}, &block)
+    @commands[name] = block
     @defaults[name] = defaults
   end
 
