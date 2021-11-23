@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'simple_option_parser', '~> 0.3'
 
-  s.add_development_dependency 'rake', '~> 12.3'
-  s.add_development_dependency 'rubygems-tasks', '~> 0.2'
+  s.add_development_dependency 'bundler', '~> 2.2'
+  s.add_development_dependency 'minitest', '~> 5.14'
+  s.add_development_dependency 'minitest-power_assert', '~> 0.3'
+  s.add_development_dependency 'rake', '~> 13.0'
 end
