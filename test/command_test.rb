@@ -3,36 +3,57 @@ require 'minitest/power_assert'
 
 require 'simple-command'
 
-class AddCommand < SimpleCommand::Command
-
-  option :format, default: 'd'
-  option :offset, default: 0
-
-  def run(args)
-    $result = "%#{@format}" % (@offset + args.map(&:to_i).inject(&:+))
-  end
-
-end
-
 class Test < MiniTest::Test
 
+  class Command < SimpleCommand::Command
+
+    def self.defaults
+      super.merge(
+        scale: 1,
+      )
+    end
+
+  end
+
+  class AddCommand < Command
+
+    def self.defaults
+      super.merge(
+        format: 'd',
+        offset: 0,
+      )
+    end
+
+    def run(args)
+      "%#{@format}" % ((@offset + args.map(&:to_i).inject(&:+)) * @scale)
+    end
+
+  end
+
   def setup
-    $result = nil
+    @commander = SimpleCommand::Commander.new(
+      'add' => AddCommand,
+    )
   end
 
   def test_simple
-    SimpleCommand.run(%w{add 1 2 3})
-    assert { $result == '6' }
+    result = @commander.run(%w{add 1 2 3})
+    assert { result == '6' }
   end
 
   def test_offset
-    SimpleCommand.run(%w{add --offset=10 1 2 3})
-    assert { $result == '16' }
+    result = @commander.run(%w{add --offset=10 1 2 3})
+    assert { result == '16' }
   end
 
   def test_format
-    SimpleCommand.run(%w{add --offset=10 --format=x 1 2 3})
-    assert { $result == '10' }
+    result = @commander.run(%w{add --offset=10 --format=x 1 2 3})
+    assert { result == '10' }
+  end
+
+  def test_global
+    result = @commander.run(%w{add --scale=2 1 2 3})
+    assert { result == '12' }
   end
 
 end
