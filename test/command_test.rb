@@ -15,7 +15,7 @@ class Test < MiniTest::Test
 
   end
 
-  class AddCommand < Command
+  class Add < Command
 
     def self.defaults
       super.merge(
@@ -31,9 +31,7 @@ class Test < MiniTest::Test
   end
 
   def setup
-    @commander = SimpleCommand::Commander.new(
-      'add' => AddCommand,
-    )
+    @commander = SimpleCommand::Commander.new
   end
 
   def test_simple
