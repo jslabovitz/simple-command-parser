@@ -10,12 +10,12 @@ class SimpleCommand
       @commands = commands
     end
 
-    def run(args=ARGV)
+    def run(args=ARGV, **defaults)
       begin
         name = args.shift or raise Error, "No command given"
         klass = @commands[name] or raise Error, "Command not found: #{name.inspect}"
         options = SimpleOptionParser.parse(args)
-        command = klass.new(klass.defaults.merge(options))
+        command = klass.new(defaults.merge(klass.defaults.merge(options)))
         command.run(args)
       rescue Error => e
         warn "Error: #{e}"
