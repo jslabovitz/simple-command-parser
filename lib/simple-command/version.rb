@@ -1,5 +1,5 @@
 class SimpleCommand
 
-  VERSION = '0.4'
+  VERSION = '0.5'
 
 end
