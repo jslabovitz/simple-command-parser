@@ -13,7 +13,7 @@ class SimpleCommand
     def run(args=ARGV, **defaults)
       begin
         name = args.shift or raise Error, "No command given"
-        klass = @commands[name] or raise Error, "Command not found: #{name.inspect}"
+        klass = command_class(name)
         options = SimpleOptionParser.parse(args)
         command = klass.new(defaults.merge(klass.defaults.merge(options)))
         command.run(args)
@@ -21,6 +21,16 @@ class SimpleCommand
         warn "Error: #{e}"
         exit(1)
       end
+    end
+
+    def command_class(name)
+      klass = @commands[name]
+      unless klass
+        klass_name = name.split('-').map(&:capitalize).join
+        klass = Command.subclasses.find { |c| c.to_s.split('::').last == klass_name }
+      end
+      raise Error, "Command not found: #{name.inspect}" unless klass
+      klass
     end
 
   end
