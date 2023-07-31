@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_path  = 'lib'
 
-  s.add_dependency 'simple_option_parser', '~> 0.5'
+  s.add_dependency 'simple_option_parser', '~> 0.6'
 
   s.add_development_dependency 'bundler', '~> 2.4'
   s.add_development_dependency 'minitest', '~> 5.18'
