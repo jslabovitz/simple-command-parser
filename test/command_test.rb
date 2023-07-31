@@ -3,7 +3,7 @@ require 'minitest/power_assert'
 
 require 'simple-command'
 
-class Test < MiniTest::Test
+class Test < Minitest::Test
 
   class Command < SimpleCommand::Command
 
