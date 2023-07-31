@@ -1,8 +1,6 @@
-require_relative 'lib/simple-command/version'
-
 Gem::Specification.new do |s|
   s.name          = 'simple-command'
-  s.version       = SimpleCommand::VERSION
+  s.version       = '0.6'
   s.summary       = 'A simple command processor.'
   s.author        = 'John Labovitz'
   s.email         = 'johnl@johnlabovitz.com'
