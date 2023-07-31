@@ -3,32 +3,34 @@ require 'minitest/power_assert'
 
 require 'simple-command'
 
+class Command < SimpleCommand::Command
+
+  def self.defaults
+    super.merge(
+      scale: 1,
+    )
+  end
+
+end
+
+class Add < Command
+
+  def self.defaults
+    super.merge(
+      format: 'd',
+      offset: 0,
+    )
+  end
+
+  def run(args)
+    "%#{@format}" % ((@offset + args.map(&:to_i).inject(&:+)) * @scale)
+  end
+
+end
+
+###
+
 class Test < Minitest::Test
-
-  class Command < SimpleCommand::Command
-
-    def self.defaults
-      super.merge(
-        scale: 1,
-      )
-    end
-
-  end
-
-  class Add < Command
-
-    def self.defaults
-      super.merge(
-        format: 'd',
-        offset: 0,
-      )
-    end
-
-    def run(args)
-      "%#{@format}" % ((@offset + args.map(&:to_i).inject(&:+)) * @scale)
-    end
-
-  end
 
   def setup
     @commander = SimpleCommand::Commander.new
