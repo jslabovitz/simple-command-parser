@@ -6,14 +6,15 @@ class SimpleCommand
 
   class Commander
 
-    def initialize(**commands)
-      @commands = commands
+    def self.run(*args)
+      new.run(*args)
     end
 
     def run(args=ARGV, **defaults)
       begin
         name = args.shift or raise Error, "No command given"
-        klass = command_class(name)
+        klass = Command.command_classes.find { |c| name == c.to_s.split('::').last.downcase }
+        raise Error, "Command not found: #{name.inspect}" unless klass
         options = SimpleOptionParser.parse(args)
         command = klass.new(defaults.merge(klass.defaults.merge(options)))
         command.run(args)
@@ -23,19 +24,18 @@ class SimpleCommand
       end
     end
 
-    def command_class(name)
-      klass = @commands[name]
-      unless klass
-        klass_name = name.split('-').map(&:capitalize).join
-        klass = Command.subclasses.find { |c| c.to_s.split('::').last == klass_name }
-      end
-      raise Error, "Command not found: #{name.inspect}" unless klass
-      klass
-    end
-
   end
 
   class Command
+
+    def self.inherited(klass)
+      @@command_classes ||= []
+      @@command_classes << klass
+    end
+
+    def self.command_classes
+      defined?(@@command_classes) ? @@command_classes : []
+    end
 
     def self.defaults
       {}
@@ -45,9 +45,6 @@ class SimpleCommand
       params.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
-    end
-
-    def run(args)
     end
 
   end
