@@ -13,7 +13,8 @@ class SimpleCommand
     def run(args=ARGV, **defaults)
       begin
         name = args.shift or raise Error, "No command given"
-        klass = Command.command_classes.find { |c| name == c.to_s.split('::').last.downcase }
+        name = name.split('-').map(&:capitalize).join
+        klass = Command.command_classes.find { |c| name == c.to_s.split('::').last }
         raise Error, "Command not found: #{name.inspect}" unless klass
         options = SimpleOptionParser.parse(args)
         command = klass.new(defaults.merge(klass.defaults.merge(options)))
