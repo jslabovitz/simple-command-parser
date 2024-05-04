@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name          = 'simple-command'
-  s.version       = '0.7'
+  s.version       = '0.8'
   s.summary       = 'A simple command processor.'
   s.author        = 'John Labovitz'
   s.email         = 'johnl@johnlabovitz.com'
