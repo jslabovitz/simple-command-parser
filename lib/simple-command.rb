@@ -11,18 +11,10 @@ class SimpleCommand
     end
 
     def run(args=ARGV, **defaults)
-      begin
-        name = args.shift or raise UsageError, "No command given"
-        name = name.split('-').map(&:capitalize).join
-        klass = Command.command_classes.find { |c| name == c.to_s.split('::').last }
-        raise UsageError, "Command not found: #{name.inspect}" unless klass
-        options = SimpleOptionParser.parse(args)
-        command = klass.new(defaults.merge(klass.defaults.merge(options)))
-        command.run(args)
-      rescue UsageError => e
-        warn "Usage error: #{e}"
-        exit(1)
-      end
+      cmd_name = args.shift or raise UsageError, "No command given"
+      cmd_class = Command.find_command(cmd_name) or raise UsageError, "Command not found: #{cmd_name.inspect}"
+      options = defaults.merge(cmd_class.defaults.merge(SimpleOptionParser.parse(args)))
+      cmd_class.new(options).tap { |cmd| cmd.run(args) }
     end
 
   end
@@ -34,8 +26,16 @@ class SimpleCommand
       @@command_classes << klass
     end
 
-    def self.command_classes
-      defined?(@@command_classes) ? @@command_classes : []
+    def self.find_command(name)
+      map = @@command_classes.select { |k| k.subclasses.empty? }.map { |k| [k.command_name, k] }.to_h
+      map[name]
+    end
+
+    def self.command_name
+      name.to_s.
+        split('::').last.
+        gsub(/([a-z])([A-Z])/, '\1-\2').
+        downcase
     end
 
     def self.defaults
