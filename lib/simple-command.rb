@@ -2,7 +2,7 @@ require 'simple_option_parser'
 
 class SimpleCommand
 
-  class UsageError < Exception; end
+  class UsageError < StandardError; end
 
   class Commander
 
