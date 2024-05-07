@@ -12,7 +12,7 @@ class SimpleCommand
 
     def run(args=ARGV, **defaults)
       cmd_name = args.shift or raise UsageError, "No command given"
-      cmd_class = Command.find_command(cmd_name) or raise UsageError, "Command not found: #{cmd_name.inspect}"
+      cmd_class = Command.find_command(cmd_name) or raise UsageError, "Unknown command: #{cmd_name.inspect}"
       options = defaults.merge(cmd_class.defaults.merge(SimpleOptionParser.parse(args)))
       cmd_class.new(options).tap { |cmd| cmd.run(args) }
     end
