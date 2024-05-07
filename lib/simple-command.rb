@@ -42,9 +42,10 @@ class SimpleCommand
       {}
     end
 
-    def initialize(params={})
-      params.each do |key, value|
-        instance_variable_set("@#{key}", value)
+    def initialize(options={})
+      options.each do |key, value|
+        raise UsageError, "Unknown option: #{key.inspect}" unless respond_to?(key)
+        send("#{key}=", value)
       end
     end
 
