@@ -1,11 +1,11 @@
 require 'minitest/autorun'
 require 'minitest/power_assert'
 
-require 'simple-command'
+require 'simple-command-parser'
 
 class Test < Minitest::Test
 
-  class Command < SimpleCommand::Command
+  class Command < Simple::CommandParser::Command
 
     attr_accessor :scale
     attr_accessor :result
@@ -37,33 +37,33 @@ class Test < Minitest::Test
   end
 
   def setup
-    @commander = SimpleCommand::Commander.new
+    @parser = Simple::CommandParser.new
   end
 
   def test_simple
-    result = @commander.run(%w{add 1 2 3}).result
+    result = @parser.run(%w{add 1 2 3}).result
     assert { result == '6' }
   end
 
   def test_offset
-    result = @commander.run(%w{add --offset=10 1 2 3}).result
+    result = @parser.run(%w{add --offset=10 1 2 3}).result
     assert { result == '16' }
   end
 
   def test_format
-    result = @commander.run(%w{add --offset=10 --format=x 1 2 3}).result
+    result = @parser.run(%w{add --offset=10 --format=x 1 2 3}).result
     assert { result == '10' }
   end
 
   def test_global
-    result = @commander.run(%w{add --scale=2 1 2 3}).result
+    result = @parser.run(%w{add --scale=2 1 2 3}).result
     assert { result == '12' }
   end
 
   def test_usage
     begin
-      result = @commander.run(%w{bad})&.result
-    rescue SimpleCommand::UsageError
+      result = @parser.run(%w{bad})&.result
+    rescue Simple::CommandParser::UsageError
       nil
     end
     assert { result == nil }

@@ -1,14 +1,14 @@
 Gem::Specification.new do |s|
-  s.name          = 'simple-command'
-  s.version       = '0.9'
-  s.summary       = 'A simple command processor.'
+  s.name          = 'simple-command-parser'
+  s.version       = '1.0'
+  s.summary       = 'A simple command parser.'
   s.author        = 'John Labovitz'
   s.email         = 'johnl@johnlabovitz.com'
   s.description   = %q{
-    SimpleCommand is a simple command processor.
+    Simple::CommandParser is a simple command parser.
   }.strip
   s.license       = 'MIT'
-  s.homepage      = 'http://github.com/jslabovitz/simple-command'
+  s.homepage      = 'http://github.com/jslabovitz/simple-command-parser'
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
