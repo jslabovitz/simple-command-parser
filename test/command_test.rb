@@ -37,7 +37,7 @@ class Test < Minitest::Test
   end
 
   def setup
-    @parser = Simple::CommandParser.new
+    @parser = Simple::CommandParser
   end
 
   def test_simple
