@@ -48,7 +48,7 @@ module Simple
 
       def initialize(options={})
         options.each do |key, value|
-          raise CommandParser::UsageError, "Unknown option: #{key.inspect}" unless respond_to?(key)
+          raise UsageError, "Unknown option: #{key.inspect}" unless respond_to?(key)
           send("#{key}=", value)
         end
       end
