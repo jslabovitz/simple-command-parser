@@ -53,6 +53,10 @@ module Simple
         end
       end
 
+      def run(args)
+        # implemented by subclass
+      end
+
     end
 
   end
