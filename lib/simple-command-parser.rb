@@ -6,11 +6,16 @@ module Simple
 
     class UsageError < StandardError; end
 
-    def self.run(*args)
-      new.run(*args)
+    def self.run!(*args)
+      begin
+        run(*args)
+      rescue UsageError => e
+        warn "#{$0}: #{e}"
+        exit(1)
+      end
     end
 
-    def run(args=ARGV, **defaults)
+    def self.run(args=ARGV, **defaults)
       cmd_name = args.shift or raise UsageError, "No command given"
       cmd_class = Command.find_command(cmd_name) or raise UsageError, "Unknown command: #{cmd_name.inspect}"
       options = defaults.merge(cmd_class.defaults.merge(SimpleOptionParser.parse(args)))
