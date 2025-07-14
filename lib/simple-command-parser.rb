@@ -25,6 +25,7 @@ module Simple
       end
 
       def self.find_command(name)
+        @@command_classes ||= []
         map = @@command_classes.select { |k| k.subclasses.empty? }.map { |k| [k.command_name, k] }.to_h
         map[name]
       end
